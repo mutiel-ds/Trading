@@ -10,48 +10,66 @@ Desarrollar, evaluar y comparar modelos que pronostiquen el **precio de cierre (
 * **Validación**: siempre **TimeSeriesSplit / walk-forward**; cero fuga de datos.
 * **Baselines** obligatorias\*\*:
 
-  * “Naive” (mañana = hoy).
+  * "Naive" (mañana = hoy).
   * Media móvil corta.
     Si un modelo no mejora a estos, no avanzo.
 
 ---
 
-# Etapa 0 — Preparación de datos y entorno
+# ✅ Etapa 0 — Preparación de datos y entorno **[COMPLETADA]**
 
-**Qué haré**
+**Estado**: ✅ **IMPLEMENTADA Y FUNCIONANDO** - Ver `phase0/` para implementación completa
 
-* Definir universo inicial (AAPL) y horizonte (diario, últimos 5–10 años).
-* Descargar datos (precio ajustado, volumen). Ajustar por splits/dividendos.
-* Limpiar huecos, alinear calendarios, verificar zona horaria.
-* Crear **retornos** (log/porcentuales) y una **serie objetivo** clara (precio o retorno t+1).
-* Implementar **backtesting walk-forward** reutilizable (función/pipeline).
-* Guardar un cuaderno de **experiment tracking** (resultados, hiperparámetros, métricas).
+**Qué se implementó**
 
-**Entregables**
+* ✅ Definir universo inicial (AAPL) y horizonte (diario, últimos 5–10 años).
+* ✅ Descargar datos (precio ajustado, volumen). Ajustar por splits/dividendos.
+* ✅ Limpiar huecos, alinear calendarios, verificar zona horaria.
+* ✅ Crear **retornos** (log/porcentuales) y una **serie objetivo** clara (precio o retorno t+1).
+* ✅ Implementar **backtesting walk-forward** reutilizable (función/pipeline).
+* ✅ Guardar un cuaderno de **experiment tracking** (resultados, hiperparámetros, métricas).
 
-* Dataset limpio con features mínimas.
-* Baselines calculadas y registradas.
+**Entregables logrados**
 
-**Criterio para pasar de etapa**: baselines reproducibles y backtest funcionando.
+* ✅ Dataset limpio con features mínimas (1,258 días de AAPL 2020-2024).
+* ✅ Baselines calculadas y registradas (naive: 47.0%, SMA5: 53.6%, SMA20: 49.2%).
+* ✅ Sistema de walk-forward con 46 splits temporales.
+* ✅ Framework de evaluación completo (MAE, RMSE, MAPE, Directional Accuracy).
+
+**Resultados clave**
+
+* **Mejor baseline**: SMA_5 con 53.6% de precisión direccional
+* **Error de referencia**: Naive con 1.97 MAE
+* **Validación robusta**: 46 splits sin fuga de datos
+* **Framework listo**: Sistema completo para comparar modelos futuros
+
+**Criterio para pasar de etapa**: ✅ **CUMPLIDO** - baselines reproducibles y backtest funcionando.
+
+**Documentación**: Ver `phase0/README.md` y `phase0/RESULTS.md` para análisis completo.
 
 ---
 
-# Etapa 1 — Modelos estadísticos (ARIMA/SARIMA y Prophet)
+# 🔄 Etapa 1 — Modelos estadísticos (ARIMA/SARIMA y Prophet) **[EN DESARROLLO]**
 
-**Qué haré**
+**Estado**: 🚧 **EN PROGRESO** - Desarrollo iniciado
 
-* EDA de estacionalidad/tendencias; test ADF para estacionariedad.
-* Probar transformaciones (diferenciación, log-precios vs retornos).
-* Ajustar **ARIMA/SARIMA** (grid pequeño, criterios AIC/BIC).
-* Ajustar **Prophet** con componentes de tendencia y estacionalidad semanal/anual.
-* Backtest walk-forward con ventana rodante; recolectar métricas.
+**Qué se está implementando**
 
-**Entregables**
+* 🔄 EDA de estacionalidad/tendencias; test ADF para estacionariedad.
+* 🔄 Probar transformaciones (diferenciación, log-precios vs retornos).
+* 🔄 Ajustar **ARIMA/SARIMA** (grid pequeño, criterios AIC/BIC).
+* 🔄 Ajustar **Prophet** con componentes de tendencia y estacionalidad semanal/anual.
+* 🔄 Backtest walk-forward con ventana rodante; recolectar métricas.
+
+**Entregables esperados**
 
 * Funciones para entrenar y pronosticar con ARIMA/SARIMA y Prophet.
-* Tablas/gráficas comparando contra baselines.
+* Tablas/gráficas comparando contra baselines de Etapa 0.
+* Mejora sobre SMA_5 (53.6% directional accuracy).
 
 **Criterio para pasar de etapa**: al menos **una mejora clara** sobre la baseline y lecciones sobre estacionalidad/transformaciones.
+
+**Objetivo de mejora**: Directional Accuracy > 60% (vs 53.6% de SMA_5).
 
 ---
 
@@ -133,7 +151,7 @@ Desarrollar, evaluar y comparar modelos que pronostiquen el **precio de cierre (
 * Versionado de datos/modelos, seeds fijas, informes automáticos.
 * Monitoreo de **drift** (datos y rendimiento) y reentrenos programados.
 * Estrategia de **riesgo**: tamaño de posición, límites de pérdida, costos de transacción en backtests.
-* Registro de **incidencias** y checklist de “no leakage”.
+* Registro de **incidencias** y checklist de "no leakage".
 
 ---
 
@@ -167,10 +185,42 @@ Desarrollar, evaluar y comparar modelos que pronostiquen el **precio de cierre (
 
 ---
 
-# Próximos pasos inmediatos
+# 🎯 Próximos pasos inmediatos
 
-1. Implementar Etapa 0 completa y fijar baselines.
-2. Ejecutar Etapa 1 y documentar si retornos vs precios logarítmicos marcan diferencia.
-3. Decidir objetivo principal (regresión de retorno vs clasificación de dirección) antes de Etapa 2.
+1. ✅ **Etapa 0 completada** - Sistema de baselines funcionando.
+2. 🔄 **Implementar Etapa 1** - ARIMA/SARIMA y Prophet.
+3. **Decidir objetivo principal** (regresión de retorno vs clasificación de dirección) antes de Etapa 2.
+
+---
+
+# 📊 Estado del Proyecto
+
+| **Etapa** | **Estado** | **Progreso** | **Fecha** |
+|-----------|------------|---------------|-----------|
+| **Etapa 0** | ✅ **COMPLETADA** | 100% | 30 Ago 2025 |
+| **Etapa 1** | 🚧 **EN DESARROLLO** | 0% | En progreso |
+| **Etapa 2** | ⏳ **PENDIENTE** | 0% | - |
+| **Etapa 3** | ⏳ **PENDIENTE** | 0% | - |
+| **Etapa 4** | ⏳ **PENDIENTE** | 0% | - |
+
+---
+
+# 📁 Estructura del Proyecto
+
+```
+Trading/
+├── phase0/                    # ✅ COMPLETADA
+│   ├── README.md             # Documentación completa
+│   ├── RESULTS.md            # Análisis detallado de resultados
+│   ├── main.py               # Script principal
+│   ├── data_preparation.py   # Pipeline de datos
+│   ├── backtesting.py        # Framework de backtesting
+│   ├── utils.py              # Utilidades
+│   └── results/              # Resultados generados
+├── ROADMAP.md                # Este archivo
+└── [Fases futuras...]
+```
+
+---
 
 Este plan me sirve como guía viva: actualizaré decisiones y resultados en cada etapa antes de subir la siguiente marcha.
