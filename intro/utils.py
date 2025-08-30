@@ -4,7 +4,7 @@ from logging import Logger, getLogger, basicConfig
 from argparse import Namespace, ArgumentParser, ArgumentDefaultsHelpFormatter
 
 basicConfig(level="INFO")
-logger: Logger = getLogger(name="trading")
+logger: Logger = getLogger(name="intro")
 
 Number: TypeAlias = int | float
 

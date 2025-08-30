@@ -8,8 +8,8 @@ from numpy import ndarray
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 
-from utils import logger, basicConfig
-from utils import parse_arguments, Number
+from intro.utils import logger, basicConfig
+from intro.utils import parse_arguments, Number
 
 def download_stock_data(
     symbol: str,
