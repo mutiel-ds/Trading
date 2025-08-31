@@ -1,10 +1,12 @@
 import os
-import logging
+import numpy as np
 import pandas as pd
 from numpy import floating
-from logging import Logger, getLogger, basicConfig
 
-from typing import TypeAlias, Optional
+from datetime import datetime
+from typing import TypeAlias, Optional, List, Dict
+from logging import Logger, getLogger, basicConfig
+from argparse import Namespace, ArgumentParser, ArgumentDefaultsHelpFormatter
 
 basicConfig(level="INFO")
 logger: Logger = getLogger(name="phase0")
@@ -14,9 +16,51 @@ Number: TypeAlias = int | float | floating
 SYMBOL = "AAPL"
 START_DATE = "2020-01-01"
 END_DATE = "2025-01-01"
+INTERVAL = "1d"
 
 RESULTS_PATH = "phase0/results"
 DATASETS_PATH = "datasets"
+
+def parse_arguments() -> Namespace:
+    """
+    Parse command line arguments.
+    """
+    parser: ArgumentParser = ArgumentParser(
+        description="Download and analyze stock data using yfinance",
+        formatter_class=ArgumentDefaultsHelpFormatter
+    )
+    
+    # Symbol parameter
+    parser.add_argument(
+        "-s", "--symbol",
+        help="Stock symbol to download (e.g., AAPL, MSFT, GOOGL)",
+        default=SYMBOL
+    )
+    
+    # Date parameters
+    parser.add_argument(
+        "-sd", "--start-date",
+        type=str,
+        default=START_DATE,
+        help="Start date for data download (YYYY-MM-DD format)"
+    )
+    
+    parser.add_argument(
+        "-ed", "--end-date",
+        type=str,
+        default=END_DATE,
+        help="End date for data download (YYYY-MM-DD format)"
+    )
+    
+    # Data parameters
+    parser.add_argument(
+        "-i", "--interval",
+        choices=["1m", "2m", "5m", "15m", "30m", "60m", "90m", "1h", "1d", "5d", "1wk", "1mo", "3mo"],
+        default=INTERVAL,
+        help="Data interval (note: intraday data < 1d requires paid subscription)"
+    )
+    
+    return parser.parse_args()
 
 def dataset_path(
     symbol: str,
@@ -109,11 +153,65 @@ def save_dataset(
         interval=interval
     )
     try:
-        logging.info(msg="Trying to save data in the cache!")
+        logger.info(msg="Trying to save data in the cache!")
         data.to_csv(path)
-        logging.info(msg="Succesfully stored data in cache!")
+        logger.info(msg="Succesfully stored data in cache!")
         return True
 
     except Exception as e:
-        logging.warning(msg=f"An error ocurred while storing data in cache: {e}")
+        logger.warning(msg=f"An error ocurred while storing data in cache: {e}")
         return False
+
+def save_results(
+    summary: pd.DataFrame,
+    baseline_results: Dict[str, List[Dict[str, Number]]]
+) -> None:
+    """
+    Stores the models results.
+
+    Args:
+        summary: Summary of the baseline results of the models
+        baseline_results: Detailed results of each model
+    """
+    timestamp: str = datetime.now().strftime(format="%Y%m%d_%H%M%S")
+    os.mkdir(path=f"{RESULTS_PATH}/{timestamp}")
+
+    summary.to_csv(f"{RESULTS_PATH}/{timestamp}/baseline_results.csv", index=False)
+    
+    for model_name, results in baseline_results.items():
+        if results:
+            df: pd.DataFrame = pd.DataFrame(data=results)
+            df.to_csv(f"{RESULTS_PATH}/{timestamp}/{model_name}_detailed.csv", index=False)
+            logger.info(msg=f"Saved detailed results for {model_name}")
+    
+    logger.info(msg=f"Results saved with timestamp: {timestamp}")
+
+def final_assessment(baseline_results: Dict[str, List[Dict[str, Number]]]) -> None:
+    """
+    Shows the final assessment of the obtained results in the terminal.
+
+    Args:
+        baseline_results: Detailed results of each model
+    """
+    print("\n" + "="*60)
+    print("EVALUACIÓN FINAL - ETAPA 0")
+    print("="*60)
+
+    working_models: List = []
+    for model_name, results in baseline_results.items():
+        if results and len(results) > 0:
+            working_models.append(model_name)
+            avg_mae: Number = np.mean([float(r['mae']) for r in results])
+            avg_direction: Number = np.mean([float(r['directional_accuracy']) for r in results])
+            print(f"✓ {model_name}: MAE={avg_mae:.2f}, Directional Accuracy={avg_direction:.1f}%")
+        else:
+            print(f"✗ {model_name}: No results")
+    
+    if len(working_models) >= 2:
+        print(f"\n✅ ÉXITO: {len(working_models)} baselines funcionando correctamente")
+        print("✅ Criterio para pasar a Etapa 1: CUMPLIDO")
+    else:
+        print(f"\n❌ PROBLEMA: Solo {len(working_models)} baselines funcionando")
+        print("❌ Criterio para pasar a Etapa 1: NO CUMPLIDO")
+    
+    print("="*60)

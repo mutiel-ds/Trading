@@ -150,7 +150,7 @@ def get_stock_data(
     symbol: str,
     start_date: str,
     end_date: str,
-    interval: str = "1d"
+    interval: str
 ) -> Optional[pd.DataFrame]:
     """
     Download and process stock data for analysis.
