@@ -163,6 +163,7 @@ def save_dataset(
         return False
 
 def save_results(
+    symbol: str,
     summary: pd.DataFrame,
     baseline_results: Dict[str, List[Dict[str, Number]]]
 ) -> None:
@@ -173,15 +174,20 @@ def save_results(
         summary: Summary of the baseline results of the models
         baseline_results: Detailed results of each model
     """
+    path: str = f"{RESULTS_PATH}/{symbol}"
+    if not os.path.exists(path=path):
+        os.mkdir(path=path)
+    
     timestamp: str = datetime.now().strftime(format="%Y%m%d_%H%M%S")
-    os.mkdir(path=f"{RESULTS_PATH}/{timestamp}")
+    path += f"/{timestamp}"
+    os.mkdir(path=path)
 
-    summary.to_csv(f"{RESULTS_PATH}/{timestamp}/baseline_results.csv", index=False)
+    summary.to_csv(f"{path}/baseline_results.csv", index=False)
     
     for model_name, results in baseline_results.items():
         if results:
             df: pd.DataFrame = pd.DataFrame(data=results)
-            df.to_csv(f"{RESULTS_PATH}/{timestamp}/{model_name}_detailed.csv", index=False)
+            df.to_csv(f"{path}/{model_name}_detailed.csv", index=False)
             logger.info(msg=f"Saved detailed results for {model_name}")
     
     logger.info(msg=f"Results saved with timestamp: {timestamp}")

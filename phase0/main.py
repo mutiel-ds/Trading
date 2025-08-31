@@ -60,7 +60,11 @@ def main() -> None:
     backtester.plot_results(results=baseline_results, metric='directional_accuracy')
 
     logger.info(msg="Step 7: Saving results")
-    save_results(summary=summary, baseline_results=baseline_results)
+    save_results(
+        symbol=args.symbol,
+        summary=summary,
+        baseline_results=baseline_results
+    )
 
     logger.info(msg="Step 8: Final assessment")
     final_assessment(baseline_results=baseline_results)
