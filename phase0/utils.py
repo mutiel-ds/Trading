@@ -45,7 +45,7 @@ def dataset_path(
         logger.info(msg=f"Creating '{path}' directory!")
         os.mkdir(path=path)
 
-    path += f"{start_date.replace('-', '')}_{end_date.replace('-', '')}_{interval}"
+    path += f"{start_date.replace('-', '')}_{end_date.replace('-', '')}_{interval}.csv"
     return path
 
 def check_cached_datasets(
