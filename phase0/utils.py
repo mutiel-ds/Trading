@@ -1,3 +1,4 @@
+import os
 import logging
 import pandas as pd
 from numpy import floating
@@ -35,7 +36,15 @@ def dataset_path(
     Returns:
         Dataset path for the given request.
     """
+    if not os.path.exists(path=DATASETS_PATH):
+        logger.info(msg=f"Creating '{DATASETS_PATH}' directory!")
+        os.mkdir(path=DATASETS_PATH)
+
     path: str = f"{DATASETS_PATH}/{symbol}/"
+    if not os.path.exists(path=path):
+        logger.info(msg=f"Creating '{path}' directory!")
+        os.mkdir(path=path)
+
     path += f"{start_date.replace('-', '')}_{end_date.replace('-', '')}_{interval}"
     return path
 
