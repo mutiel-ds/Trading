@@ -9,11 +9,7 @@ from phase0.utils import Number, logger
 from phase0.backtesting import WalkForwardBackTester
 from phase0.data_preparation import get_stock_data, create_walk_forward_splits
 
-SYMBOL = "AAPL"
-START_DATE = "2020-01-01"
-END_DATE = "2025-01-01"
-
-RESULTS_PATH = "phase0/results"
+from phase0.utils import SYMBOL, START_DATE, END_DATE, RESULTS_PATH
 
 def main() -> None:
     """

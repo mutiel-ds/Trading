@@ -6,6 +6,7 @@ from datetime import date, datetime
 from typing import List, Tuple, Optional
 
 from phase0.utils import logger
+from phase0.utils import check_cached_datasets, save_dataset
 
 def download_stock_data(
     symbol: str,
@@ -163,6 +164,15 @@ def get_stock_data(
     Returns:
         Cleaned DataFrame with OHLCV data and returns
     """
+    cached_dataset: Optional[pd.DataFrame] = check_cached_datasets(
+        symbol=symbol,
+        start_date=start_date,
+        end_date=end_date,
+        interval=interval
+    )
+    if cached_dataset is not None:
+        return cached_dataset
+
     raw_data: Optional[pd.DataFrame] = download_stock_data(
         symbol=symbol,
         start_date=start_date,
@@ -179,6 +189,13 @@ def get_stock_data(
 
     postprocessed: pd.DataFrame = postprocess_stock_data(
         data=preprocessed
+    )
+    save_dataset(
+        data=postprocessed,
+        symbol=symbol,
+        start_date=start_date,
+        end_date=end_date,
+        interval=interval
     )
 
     return postprocessed
